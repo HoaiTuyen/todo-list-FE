@@ -1,10 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import { Outlet } from "react-router-dom";
+import Header from "./components/header";
+import { useEffect } from "react";
+import axios from "./util/axios.customize";
+
 
 function App() {
+  useEffect(() => {
+    const fetchApi = async() => {
+      const res = await axios.get(`/v1/api/`);
+      console.log(res);
+      
+    }
+    fetchApi();
+  }, [])
   return (
-    <div className="App">
-      <h1>Hello</h1>
+    <div>
+      <Header />
+      <Outlet />
     </div>
   );
 }
