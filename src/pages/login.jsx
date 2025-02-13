@@ -2,9 +2,12 @@ import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Button, Col, Divider, Form, Input, notification, Row } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUserApi } from "../util/api";
+import { useContext } from "react";
+import { AuthContext } from "../components/context/auth.context";
 
-const loginPage = () => {
+const LoginPage = () => {
   const navigate = useNavigate();
+  const { setAuth } = useContext(AuthContext);
   const onFinish = async (values) => {
     const { email, password } = values;
     const res = await loginUserApi(email, password);
@@ -15,6 +18,13 @@ const loginPage = () => {
       notification.success({
         message: "LOGIN USER",
         description: "SUCCESS",
+      });
+      setAuth({
+        isAuthenticated: true,
+        user: {
+          email: res.user.email,
+          name: res.user.name,
+        },
       });
       navigate("/");
     } else {
@@ -86,4 +96,4 @@ const loginPage = () => {
     </Row>
   );
 };
-export default loginPage;
+export default LoginPage;

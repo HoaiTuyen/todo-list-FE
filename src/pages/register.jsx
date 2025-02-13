@@ -6,11 +6,14 @@ const RegisterPage = () => {
   const onFinish = async (values) => {
     const { name, email, password } = values;
     const res = await createUserApi(name, email, password);
+    console.log(res);
+
     if (res) {
       notification.success({
         message: "CREATE USER",
         description: "SUCCESS",
       });
+      navigate("/login");
     } else {
       notification.error({
         message: "CREATE USER",
