@@ -7,6 +7,7 @@ import { AuthContext } from "./context/auth.context";
 
 const Header = () => {
   const { auth, setAuth } = useContext(AuthContext);
+
   const navigate = useNavigate();
   const items = [
     {

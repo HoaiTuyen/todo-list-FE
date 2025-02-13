@@ -21,6 +21,10 @@ const createTodo = (title) => {
     
     return axios.post(URL_CREATE_TODO, data)
 }
+const deleteTodo = (id) => { 
+    const URL_CREATE_TODO = `v1/api/deleteTodo/${id}`;
+    return axios.delete(URL_CREATE_TODO);
+}
 export {
-    createUserApi, loginUserApi, getTodo, createTodo
+    createUserApi, loginUserApi, getTodo, createTodo, deleteTodo
 }
