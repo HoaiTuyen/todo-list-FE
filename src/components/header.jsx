@@ -2,13 +2,12 @@ import React, { useContext, useState } from "react";
 import { MailOutlined, SettingOutlined } from "@ant-design/icons";
 
 import { Menu } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "./context/auth.context";
 
 const Header = () => {
   const { auth, setAuth } = useContext(AuthContext);
-  console.log(auth);
-
+  const navigate = useNavigate();
   const items = [
     {
       label: <Link to={"/"}>Home</Link>,
@@ -34,8 +33,32 @@ const Header = () => {
           type: "group",
           label: "Item 1",
           children: [
-            { label: <Link to={"/login"}>Đăng Nhập</Link>, key: "login" },
-            { label: "Đăng Xuất", key: "logout" },
+            ...(auth.isAuthenticated
+              ? [
+                  {
+                    label: (
+                      <span
+                        onClick={() => {
+                          localStorage.clear("access_token");
+                          setAuth({
+                            isAuthenticated: false,
+                            user: {
+                              email: "",
+                              name: "",
+                            },
+                          });
+                          navigate("/");
+                        }}
+                      >
+                        Đăng Xuất
+                      </span>
+                    ),
+                    key: "logout",
+                  },
+                ]
+              : [
+                  { label: <Link to={"/login"}>Đăng Nhập</Link>, key: "login" },
+                ]),
           ],
         },
       ],
