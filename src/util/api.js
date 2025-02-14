@@ -25,6 +25,10 @@ const deleteTodo = (id) => {
     const URL_CREATE_TODO = `v1/api/deleteTodo/${id}`;
     return axios.delete(URL_CREATE_TODO);
 }
+const updateTodo = (id, updateTodo) => {
+    const URL_UPDATE_TODO = `v1/api/updateTodo/${id}`;
+    return axios.put(URL_UPDATE_TODO, updateTodo)
+}
 export {
-    createUserApi, loginUserApi, getTodo, createTodo, deleteTodo
+    createUserApi, loginUserApi, getTodo, createTodo, deleteTodo, updateTodo
 }

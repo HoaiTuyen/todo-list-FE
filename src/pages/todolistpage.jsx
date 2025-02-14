@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getTodo, createTodo, deleteTodo } from "../util/api";
+import { getTodo, createTodo, deleteTodo, updateTodo } from "../util/api";
 import { Button, List, notification, Popover } from "antd";
 import { useNavigate } from "react-router-dom";
 import "../styles/global.css";
@@ -9,7 +9,8 @@ const TodoPage = () => {
   const [todo, setTodo] = useState([]);
   const [newTodo, setNewTodo] = useState("");
   const [visiblePopover, setVisiblePopover] = useState({});
-  console.log(visiblePopover);
+  const [editingTodo, setEditingTodo] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
 
   useEffect(() => {
     const fetchTodo = async () => {
@@ -69,6 +70,27 @@ const TodoPage = () => {
       [id]: !prev[id], // Chuyển đổi trạng thái hiển thị cho item tương ứng
     }));
   };
+  const handleEdit = (item) => {
+    setEditingTodo(item);
+    setEditTitle(item.title);
+  };
+  const handleUpdate = async (id) => {
+    if (!editTitle.trim()) return;
+    try {
+      const res = await updateTodo(id, { title: editTitle });
+      console.log(res);
+
+      setTodo((prev) =>
+        prev.map((item) =>
+          item._id === id ? { ...item, title: res.title } : item
+        )
+      );
+      setEditingTodo(null);
+      setEditTitle("");
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div
       style={{
@@ -95,19 +117,14 @@ const TodoPage = () => {
           <button type="submit">Add</button>
         </form>
       </div>
-      {/* <ul>
-        {todo.map((item, index) => (
-          <li key={index}>{item.title}</li>
-        ))}
-      </ul> */}
       <List
         style={{ width: "400px" }}
         bordered
         dataSource={todo}
         renderItem={(item) => (
           <List.Item
+            key={item._id}
             actions={[
-              // <Button onClick={() => confirmDelete(item._id)}>Delete</Button>,
               <Popover
                 content={
                   <div>
@@ -142,9 +159,25 @@ const TodoPage = () => {
               >
                 <Button>Delete</Button>
               </Popover>,
+              <Button onClick={() => handleEdit(item)}>Edit</Button>,
             ]}
           >
-            {item.title}
+            {editingTodo && editingTodo._id === item._id ? (
+              <input
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    console.log("Editing Title:", editTitle);
+
+                    handleUpdate(item._id);
+                    window.location.reload();
+                  }
+                }}
+              />
+            ) : (
+              item.title
+            )}
           </List.Item>
         )}
       />
